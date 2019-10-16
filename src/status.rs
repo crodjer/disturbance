@@ -1,9 +1,11 @@
 use crate::config::Config;
 use reqwest;
+use std::fmt;
+use std::time::Duration;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub enum Status {
-    Success,
+    Success(u16),
     DoesNotMatch,
     DoesNotExclude,
     ErrorStatus(u16),
@@ -26,7 +28,7 @@ fn categorise_response(status: u16, text: &str, config: &Config) -> Status {
     {
         Status::DoesNotExclude
     } else {
-        Status::Success
+        Status::Success(status)
     }
 }
 
@@ -36,9 +38,18 @@ impl From<reqwest::Error> for Status {
     }
 }
 
+impl fmt::Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
 impl Status {
     fn check_result(config: &Config) -> Result<Status, Status> {
-        let mut resp = reqwest::get(&config.url)?;
+        let client = reqwest::Client::builder()
+            .timeout(Duration::from_secs(5))
+            .build()?;
+        let mut resp = client.get(&config.url).send()?;
         let text = resp.text()?;
 
         Ok(categorise_response(resp.status().as_u16(), &text, config))
@@ -59,11 +70,13 @@ mod test {
             url: "https://example.com".to_string(),
             matches: Some("Foo".to_string()),
             excludes: Some("Baz".to_string()),
+            parallelism: 1,
+            timeout: 5,
         };
 
         assert_eq!(
             categorise_response(200, "Foo Bar", &config),
-            Status::Success
+            Status::Success(200)
         );
 
         assert_eq!(
