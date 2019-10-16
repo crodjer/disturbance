@@ -27,23 +27,15 @@ fn render(distribution: &HashMap<Status, usize>) -> String {
 
 fn worker(id: usize, config: Config, tx: Sender<Event>) -> (Sender<()>, thread::JoinHandle<()>) {
     let (int_tx, int_rx): (Sender<()>, Receiver<()>) = unbounded();
-    let worker = thread::spawn(move || {
-        eprintln!("Worker {} started", id);
-
-        loop {
-            select! {
-                recv(int_rx) -> _ => break,
-                default(Duration::from_secs(0)) => (),
-            }
-
-            if tx.send(Event::Status(id, Status::check(&config))).is_err() {
-                break;
-            }
+    let worker = thread::spawn(move || loop {
+        select! {
+            recv(int_rx) -> _ => break,
+            default(Duration::from_secs(0)) => (),
         }
 
-        // Sending is a non-blocking operation, the thread will continue
-        // immediately after sending its message
-        eprintln!("Worker {} finished", id);
+        if tx.send(Event::Status(id, Status::check(&config))).is_err() {
+            break;
+        }
     });
 
     (int_tx, worker)
