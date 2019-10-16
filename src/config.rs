@@ -11,7 +11,7 @@ pub struct Config {
     /// Response should not match
     #[structopt(short, long)]
     pub excludes: Option<String>,
-    /// Request Timeout
+    /// Request timeout in seconds
     #[structopt(short = "t", long = "timeout", default_value = "5")]
     pub timeout: usize,
     /// Parallelism
