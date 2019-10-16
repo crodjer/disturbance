@@ -1,6 +1,8 @@
 use crossbeam::channel::{select, unbounded, Receiver, Sender};
 use ctrlc;
 
+use failure::Error;
+
 use std::collections::HashMap;
 use std::io::stdout;
 use std::io::Write;
@@ -47,7 +49,7 @@ fn worker(id: usize, config: Config, tx: Sender<Event>) -> (Sender<()>, thread::
     (int_tx, worker)
 }
 
-pub fn workers(config: Config) {
+pub fn workers(config: Config) -> Result<(), Error> {
     let (tx, rx): (Sender<Event>, Receiver<Event>) = unbounded();
     let mut children = Vec::new();
     let mut interrupt_channels = Vec::new();
@@ -65,11 +67,10 @@ pub fn workers(config: Config) {
         }
 
         tx.clone().send(Event::Interrupt).unwrap();
-    })
-    .unwrap();
+    })?;
 
     loop {
-        match rx.recv().unwrap() {
+        match rx.recv()? {
             Event::Status(_id, status) => {
                 let count = match distribution.get(&status) {
                     Some(count) => count + 1,
@@ -77,7 +78,7 @@ pub fn workers(config: Config) {
                 };
                 distribution.insert(status, count);
                 print!("{}\r", render(&distribution));
-                stdout().flush().unwrap();
+                stdout().flush()?;
             }
             Event::Interrupt => {
                 break;
@@ -86,8 +87,10 @@ pub fn workers(config: Config) {
     }
 
     for child in children {
-        child.join().unwrap();
+        let _ = child.join();
     }
 
     println!("{}", render(&distribution));
+
+    Ok(())
 }
