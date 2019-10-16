@@ -47,7 +47,7 @@ impl fmt::Display for Status {
 impl Status {
     fn check_result(config: &Config) -> Result<Status, Status> {
         let client = reqwest::Client::builder()
-            .timeout(Duration::from_secs(5))
+            .timeout(Duration::from_secs(config.timeout as u64))
             .build()?;
         let mut resp = client.get(&config.url).send()?;
         let text = resp.text()?;
