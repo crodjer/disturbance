@@ -1,5 +1,8 @@
 # Disturbance
 
+[![Crate](https://img.shields.io/crates/v/disturbance.svg)](https://crates.io/crates/disturbance)
+[![Build Status](https://travis-ci.com/crodjer/disturbance.svg?branch=master)](https://travis-ci.com/crodjer/disturbance)
+
 A utility to test if there were any disturbances in a services
 repsponse during deployment
 
