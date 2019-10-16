@@ -1,8 +1,14 @@
 [package]
 name = "disturbance"
+description = "A utility to test if there were any disturbances in a services repsponse during deployment."
+homepage = "https://github.com/crodjer/disturbance"
+repository = "https://github.com/crodjer/disturbance"
+keywords = ["deployment", "benchmarking", "monitoring", "web"]
 version = "0.1.0"
 authors = ["Rohan Jain <crodjer@gmail.com>"]
+license = "GPL-3.0-or-later"
 edition = "2018"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
