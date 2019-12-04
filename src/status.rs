@@ -71,6 +71,7 @@ mod test {
             matches: Some("Foo".to_string()),
             excludes: Some("Baz".to_string()),
             parallelism: 1,
+            wait: 100,
             timeout: 5,
         };
 
