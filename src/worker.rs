@@ -32,7 +32,7 @@ fn worker(id: usize, config: Config, tx: Sender<Event>) -> (Sender<()>, thread::
     let worker = thread::spawn(move || loop {
         select! {
             recv(int_rx) -> _ => break,
-            default(Duration::from_secs(0)) => (),
+            default(Duration::from_millis(config.wait)) => (),
         }
 
         if tx.send(Event::Status(id, Status::check(&config))).is_err() {

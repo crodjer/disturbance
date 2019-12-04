@@ -1,10 +1,10 @@
 [package]
 name = "disturbance"
-description = "A utility to test if there were any disturbances in a services repsponse during deployment."
+description = "Monitor disturbances in a web service's behaviour."
 homepage = "https://github.com/crodjer/disturbance"
 repository = "https://github.com/crodjer/disturbance"
 keywords = ["deployment", "benchmarking", "monitoring", "web"]
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Rohan Jain <crodjer@gmail.com>"]
 license = "GPL-3.0-or-later"
 edition = "2018"

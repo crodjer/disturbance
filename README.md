@@ -3,8 +3,11 @@
 [![Crate](https://img.shields.io/crates/v/disturbance.svg)](https://crates.io/crates/disturbance)
 [![Build Status](https://travis-ci.com/crodjer/disturbance.svg?branch=master)](https://travis-ci.com/crodjer/disturbance)
 
-A utility to test if there were any disturbances in a services
-repsponse during deployment
+Monitor disturbances in a web service's behaviour.
+
+You may use `disturbance` as a monitoring utility which is up over an
+extended period of time to know if a service ever went down/unhealthy.
+Eg: Uptime during a deployment.
 
 ## Usage
 ```
@@ -20,9 +23,10 @@ OPTIONS:
     -m, --matches <matches>            Response should match
     -p, --parallelism <parallelism>    Parallelism [default: 2]
     -t, --timeout <timeout>            Request timeout in seconds [default: 5]
+    -w, --wait <wait>                  Wait time (in ms) between requests per worker. [default: 100]
 
 ARGS:
-    <url>    The URL to hit
+    <url>    The web service's URL to monitor``
 ```
 
 ## Example
@@ -65,5 +69,12 @@ ARGS:
 - Set a custom timeout in seconds (default 5)
   ```
   $ disturbance https://example.com/ -t 1
+  ErrorResponse("https://example.com/: timed out") => 4
+  ```
+
+- Set a custom wait time between requests (default: 100 ms), per
+  worker. If you want
+  ```
+  $ disturbance https://example.com/ -t 1 -w 500
   ErrorResponse("https://example.com/: timed out") => 4
   ```
