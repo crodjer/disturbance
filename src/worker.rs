@@ -12,6 +12,8 @@ use std::time::Duration;
 use crate::config::Config;
 use crate::status::Status;
 
+const CLEAR_SCREEN: &str = "\x1b[2J\x1b[0f";
+
 enum Event {
     Status(usize, Status),
     Interrupt,
@@ -69,7 +71,7 @@ pub fn workers(config: Config) -> Result<(), Error> {
                     None => 1,
                 };
                 distribution.insert(status, count);
-                print!("{}\r", render(&distribution));
+                println!("{}{}", CLEAR_SCREEN, render(&distribution));
                 stdout().flush()?;
             }
             Event::Interrupt => {
